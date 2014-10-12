@@ -1,0 +1,25 @@
+{
+  "name": "big-node-mongo-import",
+  "version": "0.0.1",
+  "description": "importing lots of data via node and mongo",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"lol, tests...\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xzela/big-node-mongo-import.git"
+  },
+  "keywords": [
+    "node",
+    "mongo",
+    "big-data"
+  ],
+  "author": "Zeph LaFassett <zeph@lafassett.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xzela/big-node-mongo-import/issues"
+  },
+  "homepage": "https://github.com/xzela/big-node-mongo-import"
+}
