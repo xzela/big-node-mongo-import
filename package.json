@@ -24,6 +24,7 @@
   "homepage": "https://github.com/xzela/big-node-mongo-import",
   "dependencies": {
     "JSONStream": "^0.9.0",
+    "minimist": "^1.1.0",
     "mongodb": "2.0.x"
   }
 }
