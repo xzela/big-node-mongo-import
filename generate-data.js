@@ -10,8 +10,8 @@ if (args.help) {
 	console.log("--size: \t number of documents to generate.");
 	console.log("\t\t defaults to `1000000`");
 	console.log("");
-	console.log("--filename: \t the file name of the JSON document that is generated. defaults to `test.json`");
-	console.log("\t\t defaults to `test.json``");
+	console.log("--filename: \t the file name of the JSON document that is generated.");
+	console.log("\t\t defaults to `test.json`");
 	console.log("");
 	console.log("example:");
 	console.log("node generate-data.js --size 100 --filename foobar.json");
