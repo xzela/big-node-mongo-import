@@ -17,7 +17,9 @@ var g = 0;
 var url = 'mongodb://127.0.0.1:27017/bigtest';
 
 MongoClient.connect(url, function (err, db) {
-
+	var big = db.collection('big');
+	// ensure an index
+	big.ensureIndex({id: 1}, {unique: true, name: 'id_index'});
 	stream.pipe(parser);
 
 	stream.on('error', function (err) {
@@ -30,38 +32,37 @@ MongoClient.connect(url, function (err, db) {
 		// console.log(json);
 
 		if (i > 100) {
-			var big = db.collection('big');
+			var bulk = big.initializeUnorderedBulkOp();
 			g += i;
-			console.log('inserting', g);
-			var args = {
-				// multi: true,
-				// upsert: true
-			};
-			var querylist = [];
+			console.log('inserting documents #', g);
+
 			for (var j in list) {
 				var item = list[j];
+				// console.log(item);
 				var query = {
-					updateOne: {
-						q: {
-							id: item.id
-						},
-						u: {
-							'$set': item
-						},
-						upsert: true
-					}
+					id: item.id
 				};
-				querylist.push(query);
+				var doc = {
+					'$set': item
+				};
+				var args = {
+					upsert: true
+				};
+				// querylist.push(query);
+				bulk.find({id: item.id}).upsert().updateOne(doc);
+				// bulk.insert(item);
 			}
 
-			big.bulkWrite(querylist, args, function (err, d) {
-				if (err) throw err;
-				querylist = null;
+			bulk.execute({w: 0}, function (err) {
+				if (err) {
+					console.log(err);
+					throw err;
+				}
+				bulk = null;
+				list = [];
+				i = 0;
 				parser.resume();
 			});
-
-			list = [];
-			i = 0;
 		} else {
 			list.push(json);
 			parser.resume();
@@ -77,4 +78,5 @@ MongoClient.connect(url, function (err, db) {
 		console.log('ending stream');
 		db.close();
 	});
+
 });

@@ -5,7 +5,8 @@ var fs = require('fs'),
 for (var i = 0; i < 1000000; i++) {
 	var item = {
 		id: i,
-		name: Math.random().toString(36),
+		// name: Math.random().toString(36),
+		name: "name_" + Math.random(),
 		value: Math.random().toString(24)
 	};
 	data.push(item);
