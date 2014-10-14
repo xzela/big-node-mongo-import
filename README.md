@@ -9,3 +9,10 @@ You need a data file. Run the following command to generate a json file.
 ```
 	$ node generate-data.js
 ```
+
+## Import the Data
+
+What the magic happen!
+```
+	$ node index.js
+```
