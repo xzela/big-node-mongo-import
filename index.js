@@ -1,4 +1,3 @@
-
 var fs = require('fs'),
 	path = require('path'),
 	MongoClient = require('mongodb').MongoClient,
@@ -8,7 +7,6 @@ var filepath = path.join(__dirname, 'test.json');
 
 var stream = fs.createReadStream(filepath, {encoding: 'UTF-8'});
 
-var buff = '';
 var parser = JSONstream.parse([/./]);
 
 var list = [];
@@ -29,9 +27,7 @@ MongoClient.connect(url, function (err, db) {
 	parser.on('data', function (json) {
 		i++;
 		parser.pause();
-		// console.log(json);
-
-		if (i > 100) {
+		if (i > 1000) {
 			var bulk = big.initializeUnorderedBulkOp();
 			g += i;
 			console.log('inserting documents #', g);
@@ -45,12 +41,8 @@ MongoClient.connect(url, function (err, db) {
 				var doc = {
 					'$set': item
 				};
-				var args = {
-					upsert: true
-				};
-				// querylist.push(query);
+				// add upsert to bulk queue
 				bulk.find({id: item.id}).upsert().updateOne(doc);
-				// bulk.insert(item);
 			}
 
 			bulk.execute({w: 0}, function (err) {
