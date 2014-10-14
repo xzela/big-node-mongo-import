@@ -1,9 +1,9 @@
-var fs = require('fs'),
-	args = require('minimist')(process.argv.slice(2)),
-	path = require('path'),
-	size = args.size || 1000000,
+var args = require('minimist')(process.argv.slice(2)),
+	data = [],
 	filename = args.filename || 'test.json',
-	data = [];
+	fs = require('fs'),
+	path = require('path'),
+	size = args.size || 1000000;
 
 if (args.help) {
 	console.log("command line options");
