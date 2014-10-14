@@ -1,9 +1,13 @@
-var fs = require('fs'),
-	path = require('path'),
+var args = require('minimist')(process.argv.slice(2)),
+	database = args.database || 'big-mongo-test',
+	collection = args.collection || 'bigdata',
+	filename = args.filename || 'test.json',
+	fs = require('fs'),
+	JSONstream = require('JSONstream'),
 	MongoClient = require('mongodb').MongoClient,
-	JSONstream = require('JSONstream');
+	path = require('path');
 
-var filepath = path.join(__dirname, 'test.json');
+var filepath = path.join(__dirname, filename);
 
 var stream = fs.createReadStream(filepath, {encoding: 'UTF-8'});
 
@@ -12,10 +16,28 @@ var parser = JSONstream.parse([/./]);
 var list = [];
 var i = 0;
 var g = 0;
-var url = 'mongodb://127.0.0.1:27017/bigtest';
+var url = 'mongodb://127.0.0.1:27017/' + database;
+if (args.help) {
+	console.log("command line options");
+	console.log("");
+	console.log("--database: \t the mongodb database you'd like to use for the import process.");
+	console.log("\t\t defaults to `big-mongo-test`");
+	console.log("");
+	console.log("--collection: \t the mongodb collection you'd like to use for the import process.");
+	console.log("\t\t defaults to `big-data`");
+	console.log("");
+	console.log("--filename: \t the file name of the JSON document that was generated. Did you remember it?");
+	console.log("\t\t defaults to `test.json`");
+	console.log("");
+	console.log("example:");
+	console.log("node index.js --filename foobar.json --database small-mong-test --collection small-data");
+	console.log("");
+
+	process.exit();
+}
 
 MongoClient.connect(url, function (err, db) {
-	var big = db.collection('big');
+	var big = db.collection(collection);
 	// ensure an index
 	big.ensureIndex({id: 1}, {unique: true, name: 'id_index'});
 	stream.pipe(parser);
@@ -30,7 +52,7 @@ MongoClient.connect(url, function (err, db) {
 		if (i > 1000) {
 			var bulk = big.initializeUnorderedBulkOp();
 			g += i;
-			console.log('inserting documents #', g);
+			console.log('inserting/upserting documents #', g);
 
 			for (var j in list) {
 				var item = list[j];
